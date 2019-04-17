@@ -36,7 +36,7 @@ public class StopWordCollect {
 		fileps.add("C:/Users/thear/eclipse-workspace/MR/src/stop-words/stop-words-english3-google.txt");
 		fileps.add("C:/Users/thear/eclipse-workspace/MR/src/stop-words/stop-words-english4.txt");
 		fileps.add("C:/Users/thear/eclipse-workspace/MR/src/stop-words/stop-words-english5.txt");
-
+		fileps.add("C:/Users/thear/eclipse-workspace/MR/src/stop-words/mywords.txt");
 		File file = new File("stopWordOutput.txt");
 		FileOutputStream fos = new FileOutputStream(file);
 		PrintStream ps = new PrintStream(fos);
