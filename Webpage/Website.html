@@ -79,24 +79,30 @@
     </script>
 	<div class="chart-example" id="chart"><svg></svg></div>
 	<script type="text/javascript" src="d3.min.js"></script>
-
+	<script type="text/javascript" src="d3-require.js"></script>
 	<script type = "text/javascript">
-	d3.csv('file:///C:/Users/thear/OneDrive/Documents/GitHub/MR/Webpage/twitterWCOut.csv', function(error, data) {
-		if (error) {
-			console.error('Error getting or parsing the data.');
-			throw error;
-		}
-		var data = data; //here you can do what you want with the data
-		var chart = bubbleChart();
-		d3.select('#chart').datum(data).call(chart);
-	});
+	
+	d3.csv('http://localhost:8080/twitterWCOut.csv', {mode: 'no-cors'})
+		.then(function(data) {
+			// data is now whole data set
+			// draw chart in here!
+			console.log("hello")
+			
+			
+			d3.select('#chart').datum(data).call(chart);
+			console.log(d3.min(data, function(d) {
+            return +d[columnForRadius]}))
+			var chart = bubbleChart().width(600).height(400);
+	})
+	.catch(function(error){
+		
+	})
 	
 	function bubbleChart() {
-		var width = 720,
-		height = 720,
+		var width = 960,
+		height = 960,
 		maxRadius = 6,
-        columnForColors = "category",
-        columnForRadius = "views";
+        columnForRadius = "count";
 
 		function chart(selection){
 			var data = selection.datum();
@@ -118,24 +124,6 @@
             .style("width", "400px")
             .text("");
 
-
-        var simulation = d3.forceSimulation(data)
-            .force("charge", d3.forceManyBody().strength([-50]))
-            .force("x", d3.forceX())
-            .force("y", d3.forceY())
-            .on("tick", ticked);
-
-        function ticked(e) {
-            node.attr("cx", function(d) {
-                    return d.x;
-                })
-                .attr("cy", function(d) {
-                    return d.y;
-                });
-		}
-		
-		var colorCircles = d3.scaleOrdinal(d3.schemeCategory10);
-		
 		var scaleRadius = d3.scaleLinear().domain([d3.min(data, function(d) {
             return +d[columnForRadius];
         }), d3.max(data, function(d) {
@@ -149,12 +137,9 @@
             .attr('r', function(d) {
                 return scaleRadius(d[columnForRadius])
             })
-            .style("fill", function(d) {
-                return colorCircles(d[columnForColors])
-            })
             .attr('transform', 'translate(' + [width / 2, height / 2] + ')')
             .on("mouseover", function(d) {
-                tooltip.html(d[columnForColors] + "<br>" + d.title + "<br>" + d[columnForRadius] + " hearts");
+			tooltip.html(d.word + "<br>" + d[columnForRadius]);
                 return tooltip.style("visibility", "visible");
             })
             .on("mousemove", function() {
@@ -178,15 +163,6 @@
 				return height;
 			}
 			height = value;
-			return chart;
-		};
-
-
-		chart.columnForColors = function(value) {
-			if (!arguments.columnForColors) {
-				return columnForColors;
-			}
-			columnForColors = value;
 			return chart;
 		};
 

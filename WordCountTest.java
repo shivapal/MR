@@ -33,14 +33,12 @@ public class WordCountTest {
 			while (itr.hasMoreTokens()) {
 				String s = itr.nextToken();
 				String s1 = s.toLowerCase();
-				int ss = s1.length();
-				char[] s2 = s1.toCharArray();
-				stemmer.add(s2,ss);
-				stemmer.stem();
-				String s3 = stemmer.toString();
-				if(!stopwords.contains(s3)) {
-					word.set(s3);
-					context.write(word, one);
+				String s2 = s1.replaceAll("[^a-zA-Z]+", "");
+				if(!stopwords.contains(s2)) {
+					if(s2.length()>0) {
+						word.set(s2);
+						context.write(word, one);
+					}
 				}
 			}
 		}
@@ -76,7 +74,7 @@ public class WordCountTest {
 		stopwords = new ArrayList<String>();
 		URL path = WordCountTest.class.getResource("stopWordOutput.txt");
 		File f = new File(path.getFile());
-		/*BufferedReader br = new BufferedReader(new FileReader("src/stopWordOutput.txt"))*/
+
 		try(BufferedReader br = new BufferedReader(new FileReader(f))){
 			String curLine;
 			while((curLine=br.readLine())!=null) {
